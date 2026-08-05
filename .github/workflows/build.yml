@@ -1,0 +1,52 @@
+name: Build Flask Image
+
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+
+    steps:
+
+    # 1. Download source code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+
+    # 2. Install Podman
+    - name: Install Podman
+      run: |
+        sudo apt update
+        sudo apt install -y podman
+
+
+    # 3. Login Docker Hub
+    - name: Login Docker Hub
+      run: |
+        podman login docker.io \
+        -u ${{ secrets.DOCKER_USERNAME }} \
+        -p ${{ secrets.DOCKER_PASSWORD }}
+
+
+    # 4. Build Image
+    - name: Build Image
+      run: |
+
+        podman build \
+        -t docker.io/${{ secrets.DOCKER_USERNAME }}/flask-app:${{ github.sha }} .
+
+
+    # 5. Push Image
+    - name: Push Image
+      run: |
+
+        podman push \
+        docker.io/${{ secrets.DOCKER_USERNAME }}/flask-app:${{ github.sha }}
