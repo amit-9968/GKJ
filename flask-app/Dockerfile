@@ -6,7 +6,7 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY first_app.py .
+COPY app.py .
 
 EXPOSE 5000
 
